@@ -1,3 +1,7 @@
+## Exercise derived from https://www.dataquest.io/blog/data-science-project-fandango/ with modifications
+# I expanded the analysis by including joining data frames, running a permutation test and visualizing the data.
+
+
 import pandas as pd
 fandango_score = pd.read_csv('fandango_score_comparison.csv')
 movie_ratings = pd.read_csv('movie_ratings_16_17.csv')
