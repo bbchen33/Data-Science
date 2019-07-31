@@ -50,7 +50,7 @@ total_average = fandango_15_and_16.Fandango_Stars.mean()
 #randomly select 129 samples and assign them as ratings from 2015
 fifteen_avg_list = []
 sixteen_avg_list = []
-for i in range(100):
+for i in range(10000):
 	random15 = fandango_15_and_16.sample(129)
 	fifteen_avg_list.append(random15.Fandango_Stars.mean())
 	sixteen_avg_list.append((fandango_15_and_16.Fandango_Stars.sum()-random15.Fandango_Stars.sum())/191)
@@ -61,7 +61,7 @@ actual_difference = fandango_2015.Fandango_Stars.mean() - fandango_2016.Fandango
 
 Extreme_chances = np.sum(difference>abs(actual_difference))+np.sum(difference<-abs(actual_difference))
 # p value
-probability = Extreme_chances/200
+probability = Extreme_chances/20000
 # As the p value is < 0.05, it means the probability that given what we observed, the chance that there is no difference is extremely unlikely --> there is a difference
 # Examine the distribution of the mean differences obtained from permutation test
 plt.hist(difference, bins = 30)
@@ -69,3 +69,18 @@ plt.hist(difference, bins = 30)
 plt.axvline(actual_difference, color = 'r', linestyle = 'dashed')
 plt.axvline(-actual_difference, color = 'r', linestyle = 'dashed')
 plt.show()
+
+# bootstrap to determine 95% confidence intervals for the mean difference between 2015 and 2016 ratings
+random_15 = []
+random_16 = []
+for i in range(10000):
+	random_15.append(np.random.choice(fandango_2015.Fandango_Stars, size = fandango_2015.shape[0], replace = True).mean())
+	random_16.append(np.random.choice(fandango_2016.Fandango_Stars, size = fandango_2016.shape[0], replace = True).mean())
+
+mean_difference = np.array(random_15) - np.array(random_16)
+sort_difference = np.sort(mean_difference)
+# the 95% confidence intervals start from 2.5% from the left and 2.5% from the right
+CI_left = sort_difference[int(0.025*10000)]
+CI_right = sort_difference[int(0.975*10000)]
+# this tells us that we can say the average difference in 15 and 16 ratings is 0.197 stars with a 95% confidence interval the true population mean lies between 0.08 and 0.31
+
